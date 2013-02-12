@@ -55,7 +55,7 @@ class WP_avatar
 		add_submenu_page( 
 			'profile.php', 
 			__('Avatar', 'wpa'), 
-			__('Avatar', 'wpa'), 
+			__('Profilbild', 'wpa'), 
 			'manage_options', 
 			'upload-avatar', 
 			array( &$this, 'avatar_page' ) 
@@ -66,7 +66,7 @@ class WP_avatar
 	{
 		$output = '<div class="wrap">';
 			$output .= '<div id="icon-users" class="icon32"></div>';
-			$output .= '<h2>'. __('Upload Avatar', 'wpa') .'</h2>';
+			$output .= '<h2>'. __('Ändra Profilbild', 'wpa') .'</h2>';
 
 			$output .= '<div class="avatar-wrap">';
 
@@ -74,7 +74,7 @@ class WP_avatar
 
 				$output .= '<form method="post" enctype="multipart/form-data">';;
 					$output .= '<div class="file-upload button">';
-						$output .= '<label for="avatar-upload">'. __('Change avatar', 'wpa') .'</label>';
+						$output .= '<label for="avatar-upload">'. __('Ändra profilbild', 'wpa') .'</label>';
 						$output .= '<input id="avatar-upload" type="file" name="'. self::$input_field .'" />';
 					$output .= '</div>';
 					$output .= '<input type="submit" name="save_avatar" value="'. __('Save Avatar', 'wpa') .'" class="button button-primary">';
@@ -112,7 +112,6 @@ class WP_avatar
 		$user    = get_userdata( $user_id );
 		$type    = wp_check_filetype( $this->mime_type );
 
-		// Flyttade in så att den gör ny instans av sås-filen varje gång! :) /hAmpzter
 		$image = wp_get_image_editor( $sourcefile );
 		if ( ! is_wp_error( $image ) ) 
 		{
@@ -121,7 +120,7 @@ class WP_avatar
 
 		    update_user_meta( $user_id, $this->meta_key, $user->user_login . '.' . $type['ext'] );
 		}
-}
+	}
 
 	public function display_avatar( $size = 32 )
 	{
@@ -134,20 +133,20 @@ class WP_avatar
 	{	
 		if( $id_or_email ) 
 		{
-			$avatars = get_user_meta( $id_or_email, $this->meta_key, true );
+			$avatar = get_user_meta( $id_or_email, $this->meta_key, true );
 
-			if( ! empty( $avatars ) )
+			if( ! empty( $avatar ) )
 			{
-				$avatar_path = $this->avatar_url . $avatars .'?s='. $size .'';
+				$avatar_path = $this->avatar_url . $avatar .'?s='. $size .'';
 			}
 			else 
 			{
 				$avatar_path = $default;
 			}
 
-			$avatar_html = "<img src='{$avatar_path}' alt='{$alt}' height='{$size}' width='{$size}' />";
+			$avatar = "<img alt='{$alt}' src='{$avatar_path}' class='avatar avatar-{$size} photo avatar-default' height='{$size}' width='{$size}' />";
 
-			return $avatar_html;
+			return $avatar;
 		}
 		
 		return $avatar;
