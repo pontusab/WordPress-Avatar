@@ -1,15 +1,40 @@
 <?php
 /*
-Plugin Name: WordPress Avatar
-Version: 0.1
-Author: Pontus Abrahamsson @NetRelations
+* Plugin Name: WordPress Avatar
+* Plugin URI: https://github.com/pontusab/WordPress-Avatar
+* Description: Add local avatars to your profile from WordPress-admin. 
+* Version: 1.0
+* Author: Pontus Abrahamsson
+* Author URI:  http://pontusab.se
+* License:     MIT
+* License URI: http://www.opensource.org/licenses/mit-license.php
+*
+* Copyright (c) 2013 Pontus Abrahamsson
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*
 */
-
 
 /**
  * Self Initialize the object when plugins_loaded
  * @return object WP_avatar
- * @since 0.1
+ * @since 1.0
 */ 
 add_action( 'plugins_loaded', array( 'WP_avatar', 'init' ) );
 
@@ -18,7 +43,7 @@ class WP_avatar
 {
 	/**
 	 * Setup some vars in the object
-	 * @since 0.1
+	 * @since 1.0
 	*/ 
 	private 
 		$upload_path,
@@ -30,14 +55,14 @@ class WP_avatar
 
 	/**
 	 * Name of the form
-	 * @since 0.1
+	 * @since 1.0
 	*/ 
 	private static $input_field = 'wp_avatar';
 
 
 	/**
 	 * Self Initialize the object when plugins_loaded
-	 * @since 0.1
+	 * @since 1.0
 	*/ 
 	public static function init() 
 	{
@@ -48,7 +73,7 @@ class WP_avatar
 
 	/**
 	 * Run all the functions and filters on startup
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function __construct()
 	{
@@ -78,7 +103,7 @@ class WP_avatar
 
 	/**
 	 * Add Scripts to Profile-page 
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function scripts() 
 	{	
@@ -97,7 +122,7 @@ class WP_avatar
 
 	/**
 	 * Add avatars folder on activation 
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function activation()
 	{
@@ -110,7 +135,7 @@ class WP_avatar
 
 	/**
 	 * Add Pofile menu to Users
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function profile_menu() 
 	{
@@ -128,7 +153,7 @@ class WP_avatar
 	/**
 	 * Submitform for avatar uplaod
 	 * @return Html and form
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function avatar_page()
 	{
@@ -160,7 +185,7 @@ class WP_avatar
 	/**
 	 * Takes care of the upload 
 	 * @return mime_type and upload file
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function handle_upload()
 	{
@@ -179,7 +204,7 @@ class WP_avatar
 
 	/**
 	 * Save the avatar to disk and update usermeta
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	private function save_avatar( $sourcefile, $size )
 	{
@@ -212,7 +237,7 @@ class WP_avatar
 	/**
 	 * Override get_avatar with uploaded avatar else default
 	 * @return uploaded avatar else default
-	 * @since 0.1
+	 * @since 1.0
 	*/
 	public function get_avatar( $avatar, $id_or_email, $size, $default, $alt )
 	{	
