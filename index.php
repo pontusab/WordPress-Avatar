@@ -31,13 +31,6 @@
 *
 */
 
-/**
- * Self Initialize the object when plugins_loaded
- * @return object WP_avatar
- * @since 1.0
-*/ 
-add_action( 'plugins_loaded', array( 'WP_avatar', 'init' ) );
-
 
 class WP_avatar
 {
@@ -128,7 +121,7 @@ class WP_avatar
 	{
 		if( ! file_exists( $this->upload_path ) ) 
 		{
-			mkdir( $this->upload_path, 0766, true );
+			mkdir( $this->upload_path, 0777 ,true );
 		}
 	}
 
@@ -262,3 +255,6 @@ class WP_avatar
 		return $avatar;
 	}
 }
+
+// Initialize the object
+$wpa = new WP_avatar;
