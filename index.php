@@ -5,6 +5,8 @@ Version: 0.1
 Author: Pontus Abrahamsson @NetRelations
 */
 
+add_action( 'plugins_loaded', array( 'WP_avatar', 'init' ) );
+
 class WP_avatar
 {
 	private $upload_path,
@@ -13,6 +15,12 @@ class WP_avatar
 			$mime_type;
 
 	private static $input_field = 'wp_avatar';
+
+	public static function init() 
+	{
+        $class = __CLASS__;
+        new $class;
+    }
 
 	public function __construct()
 	{
@@ -31,10 +39,10 @@ class WP_avatar
 		add_action( 'admin_init', array( &$this, 'get_upload' ) );
 		add_action( 'admin_menu', array( &$this, 'profile_menu' ) );
 		add_filter( 'get_avatar', array( &$this, 'get_avatar'), 10, 5 );
-		add_action( 'admin_init', array( &$this, 'init') );
+		add_action( 'admin_init', array( &$this, 'scripts') );
 	}
 
-	public function init() 
+	public function scripts() 
 	{
 		wp_register_style( 'style', WP_AVATAR_PATH . 'assets/style.css' );
 		wp_register_script( 'script', WP_AVATAR_PATH . 'assets/script.js' );
@@ -55,7 +63,7 @@ class WP_avatar
 		add_submenu_page( 
 			'profile.php', 
 			__('Avatar', 'wpa'), 
-			__('Profilbild', 'wpa'), 
+			__('Ändra Profilbild', 'wpa'), 
 			'manage_options', 
 			'upload-avatar', 
 			array( &$this, 'avatar_page' ) 
@@ -70,7 +78,7 @@ class WP_avatar
 
 			$output .= '<div class="avatar-wrap">';
 
-				$output .= $this->display_avatar( 250 );
+				$output .= $this->display_avatar( 200 );
 
 				$output .= '<form method="post" enctype="multipart/form-data">';;
 					$output .= '<div class="file-upload button">';
@@ -103,7 +111,7 @@ class WP_avatar
 		$this->mime_type = $_FILES[self::$input_field]['name'];
 
 		// Save and run the magic on avatars
-		$this->save_avatar( $_FILES[self::$input_field]['tmp_name'], 250 );
+		$this->save_avatar( $_FILES[self::$input_field]['tmp_name'], 200 );
 	}
 
 	private function save_avatar( $sourcefile, $size )
@@ -111,17 +119,19 @@ class WP_avatar
 		$user_id = get_current_user_id();
 		$user    = get_userdata( $user_id );
 		$type    = wp_check_filetype( $this->mime_type );
+		$image   = wp_get_image_editor( $sourcefile );
 
-		$image = wp_get_image_editor( $sourcefile );
 		if ( ! is_wp_error( $image ) ) 
 		{
 		    $image->resize( $size, $size, true );
 		    $image->save( $this->upload_path . $user->user_login . '.' . $type['ext'] );
 
+		    // Save the name of the file to user_meta
 		    update_user_meta( $user_id, $this->meta_key, $user->user_login . '.' . $type['ext'] );
 		}
 	}
 
+	// Simple function to return the avatar and wanted size
 	public function display_avatar( $size = 32 )
 	{
 		$user_id = get_current_user_id();
@@ -129,6 +139,7 @@ class WP_avatar
 		return get_avatar( $user_id, $size );
 	}
 
+	// Overide the default get_avatar function via the add_action
 	public function get_avatar( $avatar, $id_or_email, $size, $default, $alt )
 	{	
 		if( $id_or_email ) 
@@ -152,5 +163,3 @@ class WP_avatar
 		return $avatar;
 	}
 }
-
-$WP_Avatar = new WP_Avatar;
