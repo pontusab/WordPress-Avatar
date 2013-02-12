@@ -14,7 +14,8 @@ class WP_avatar
 		$upload_path,
 		$meta_key,
 		$avatar_url,
-		$mime_type;
+		$mime_type,
+		$formats;
 
 	private static $input_field = 'wp_avatar';
 
@@ -34,6 +35,7 @@ class WP_avatar
 		$this->avatar_url  = WP_CONTENT_URL . '/uploads/avatars/';
 		$this->upload_path = WP_CONTENT_DIR . '/uploads/avatars/';
 		$this->meta_key    = 'avatar';
+		$this->formats     = array( 'jpg', 'jpeg', 'png', 'gif' );
 
 		// Activation hook
 		register_activation_hook( __FILE__, array( &$this, 'activation' ) );
@@ -126,18 +128,28 @@ class WP_avatar
 
 	private function save_avatar( $sourcefile, $size )
 	{
-		$user_id = get_current_user_id();
-		$user    = get_userdata( $user_id );
-		$type    = wp_check_filetype( $this->mime_type );
-		$image   = wp_get_image_editor( $sourcefile );
+		$user_id       = get_current_user_id();
+		$user          = get_userdata( $user_id );
+		$type          = wp_check_filetype( $this->mime_type );
+		$image         = wp_get_image_editor( $sourcefile );
+		$path_and_name = $this->upload_path . $user->user_login . '.';
+
+		// User have avatar but not the same format
+		foreach ( $this->formats as $format ) 
+		{
+			if( file_exists( $path_and_name . $format ) )
+			{
+				unlink( $path_and_name . $format );
+			}
+		}
 
 		if ( ! is_wp_error( $image ) ) 
 		{
 		    $image->resize( $size, $size, true );
-		    $image->save( $this->upload_path . $user->user_login . '.' . $type['ext'] );
+		    $image->save( $path_and_name . $type['ext'] );
 
 		    // Save the name of the file to user_meta
-		    update_user_meta( $user_id, $this->meta_key, $user->user_login . '.' . $type['ext'] );
+		    update_user_meta( $user_id, 'avatar', $user->user_login . '.' . $type['ext'] );
 		}
 	}
 
@@ -174,4 +186,4 @@ class WP_avatar
 	}
 }
 
-load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );/lang/' );
+load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
