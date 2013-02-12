@@ -1,0 +1,1 @@
+(function(e){e(function(){e(document).on("change","input[name=wp_avatar]",function(){e(this).closest("form").submit()})})})(jQuery)
