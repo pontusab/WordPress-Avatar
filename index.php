@@ -52,18 +52,7 @@ class WP_avatar
 	*/ 
 	private static $input_field = 'wp_avatar';
 
-
-	/**
-	 * Self Initialize the object when plugins_loaded
-	 * @since 1.0
-	*/ 
-	public static function init() 
-	{
-		$class = __CLASS__;
-		new $class;
-	}
-
-
+	
 	/**
 	 * Run all the functions and filters on startup
 	 * @since 1.0
