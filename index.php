@@ -40,6 +40,9 @@ class WP_avatar
 		// Activation hook
 		register_activation_hook( __FILE__, array( &$this, 'activation' ) );
 
+		// Get translations
+		load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+
 		// Actions 
 		add_action( 'admin_init', array( &$this, 'get_upload' ) );
 		add_action( 'admin_menu', array( &$this, 'profile_menu' ) );
@@ -120,7 +123,6 @@ class WP_avatar
 	{
 		require_once( ABSPATH . '/wp-admin/includes/image.php' );
 
-
 		// Set the mime_type
 		$this->mime_type = $_FILES[self::$input_field]['name'];
 
@@ -178,11 +180,7 @@ class WP_avatar
 		
 		return $avatar;
 	}
-}
-
-load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );ze}' />";
-
-			return $avatar;
+}vatar;
 		}
 		
 		return $avatar;
