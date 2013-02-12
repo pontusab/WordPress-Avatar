@@ -74,7 +74,7 @@ class WP_avatar
 			'profile.php', 
 			__('Profile picture', 'wpa'),  
 			__('Profile picture', 'wpa'), 
-			'manage_options', 
+			'read', 
 			'upload-avatar', 
 			array( &$this, 'avatar_page' ) 
 		); 
@@ -174,4 +174,4 @@ class WP_avatar
 	}
 }
 
-load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );/lang/' );
