@@ -1,6 +1,6 @@
 <?php
 /*
-* Plugin Name: WordPress Avatar
+* Plugin Name: WordPress Local Profile Picture
 * Plugin URI: https://github.com/pontusab/WordPress-Avatar
 * Description: Add local avatars to your profile from WordPress-admin. 
 * Version: 1.0
