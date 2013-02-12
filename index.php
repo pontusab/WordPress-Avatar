@@ -9,23 +9,26 @@ add_action( 'plugins_loaded', array( 'WP_avatar', 'init' ) );
 
 class WP_avatar
 {
-	private $upload_path,
-			$meta_key,
-			$avatar_url,
-			$mime_type;
+	// Some Object vars 
+	private 
+		$upload_path,
+		$meta_key,
+		$avatar_url,
+		$mime_type;
 
 	private static $input_field = 'wp_avatar';
 
 	public static function init() 
 	{
-        $class = __CLASS__;
-        new $class;
-    }
+		$class = __CLASS__;
+		new $class;
+	}
 
 	public function __construct()
 	{
 		// Plugin path
-		define( 'WP_AVATAR_PATH', plugin_dir_url( __FILE__ ) );
+		define( 'WP_AVATAR_URL', plugin_dir_url( __FILE__ ) );
+		define( 'WP_AVATAR_PATH', plugin_dir_path( __FILE__ ) );
 
 		// Set Object vars
 		$this->avatar_url  = WP_CONTENT_URL . '/uploads/avatars/';
@@ -42,12 +45,19 @@ class WP_avatar
 		add_action( 'admin_init', array( &$this, 'scripts') );
 	}
 
+
 	public function scripts() 
-	{
-		wp_register_style( 'style', WP_AVATAR_PATH . 'assets/style.css' );
-		wp_register_script( 'script', WP_AVATAR_PATH . 'assets/script.js' );
-		wp_enqueue_style( 'style' );
-		wp_enqueue_script( 'script' );
+	{	
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		
+		// Only add on Upload Avatar Page
+		if( $page == 'upload-avatar' )
+		{
+			wp_register_style( 'style', WP_AVATAR_URL . 'assets/style.css' );
+			wp_register_script( 'script', WP_AVATAR_URL . 'assets/script.js' );
+			wp_enqueue_style( 'style' );
+			wp_enqueue_script( 'script' );
+		}
 	}
 
 	public function activation()
@@ -62,8 +72,8 @@ class WP_avatar
 	{
 		add_submenu_page( 
 			'profile.php', 
-			__('Avatar', 'wpa'), 
-			__('Ändra Profilbild', 'wpa'), 
+			__('Profile picture', 'wpa'),  
+			__('Profile picture', 'wpa'), 
 			'manage_options', 
 			'upload-avatar', 
 			array( &$this, 'avatar_page' ) 
@@ -74,7 +84,7 @@ class WP_avatar
 	{
 		$output = '<div class="wrap">';
 			$output .= '<div id="icon-users" class="icon32"></div>';
-			$output .= '<h2>'. __('Ändra Profilbild', 'wpa') .'</h2>';
+			$output .= '<h2>'. __('Change profile picture', 'wpa') .'</h2>';
 
 			$output .= '<div class="avatar-wrap">';
 
@@ -82,10 +92,10 @@ class WP_avatar
 
 				$output .= '<form method="post" enctype="multipart/form-data">';;
 					$output .= '<div class="file-upload button">';
-						$output .= '<label for="avatar-upload">'. __('Ändra profilbild', 'wpa') .'</label>';
+						$output .= '<label for="avatar-upload">'. __('Change Profile picture', 'wpa') .'</label>';
 						$output .= '<input id="avatar-upload" type="file" name="'. self::$input_field .'" />';
 					$output .= '</div>';
-					$output .= '<input type="submit" name="save_avatar" value="'. __('Save Avatar', 'wpa') .'" class="button button-primary">';
+					$output .= '<input type="submit" name="save_avatar" value="'. __('Change Profile picture', 'wpa') .'" class="button button-primary">';
 				$output .= '</form>';
 
 			$output .= '</div>';
@@ -163,3 +173,5 @@ class WP_avatar
 		return $avatar;
 	}
 }
+
+load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
