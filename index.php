@@ -84,13 +84,15 @@ class WP_avatar
 
 	public function avatar_page()
 	{
+		$user_id = get_current_user_id();
+		
 		$output = '<div class="wrap">';
 			$output .= '<div id="icon-users" class="icon32"></div>';
 			$output .= '<h2>'. __('Change profile picture', 'wpa') .'</h2>';
 
 			$output .= '<div class="avatar-wrap">';
 
-				$output .= $this->display_avatar( 200 );
+				$output .= get_avatar( $user_id, 200 );
 
 				$output .= '<form method="post" enctype="multipart/form-data">';;
 					$output .= '<div class="file-upload button">';
@@ -153,14 +155,6 @@ class WP_avatar
 		}
 	}
 
-	// Simple function to return the avatar and wanted size
-	public function display_avatar( $size = 32 )
-	{
-		$user_id = get_current_user_id();
-		
-		return get_avatar( $user_id, $size );
-	}
-
 	// Overide the default get_avatar function via the add_action
 	public function get_avatar( $avatar, $id_or_email, $size, $default, $alt )
 	{	
@@ -178,6 +172,15 @@ class WP_avatar
 			}
 
 			$avatar = "<img alt='{$alt}' src='{$avatar_path}' class='avatar avatar-{$size} photo avatar-default' height='{$size}' width='{$size}' />";
+
+			return $avatar;
+		}
+		
+		return $avatar;
+	}
+}
+
+load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );ze}' />";
 
 			return $avatar;
 		}
