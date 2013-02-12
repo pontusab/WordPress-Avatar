@@ -5,11 +5,21 @@ Version: 0.1
 Author: Pontus Abrahamsson @NetRelations
 */
 
+
+/**
+ * Self Initialize the object when plugins_loaded
+ * @return object WP_avatar
+ * @since 0.1
+*/ 
 add_action( 'plugins_loaded', array( 'WP_avatar', 'init' ) );
+
 
 class WP_avatar
 {
-	// Some Object vars 
+	/**
+	 * Setup some vars in the object
+	 * @since 0.1
+	*/ 
 	private 
 		$upload_path,
 		$meta_key,
@@ -17,14 +27,29 @@ class WP_avatar
 		$mime_type,
 		$formats;
 
+
+	/**
+	 * Name of the form
+	 * @since 0.1
+	*/ 
 	private static $input_field = 'wp_avatar';
 
+
+	/**
+	 * Self Initialize the object when plugins_loaded
+	 * @since 0.1
+	*/ 
 	public static function init() 
 	{
 		$class = __CLASS__;
 		new $class;
 	}
 
+
+	/**
+	 * Run all the functions and filters on startup
+	 * @since 0.1
+	*/
 	public function __construct()
 	{
 		// Plugin path
@@ -44,13 +69,17 @@ class WP_avatar
 		load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
 		// Actions 
-		add_action( 'admin_init', array( &$this, 'get_upload' ) );
+		add_action( 'admin_init', array( &$this, 'handle_upload' ) );
 		add_action( 'admin_menu', array( &$this, 'profile_menu' ) );
 		add_filter( 'get_avatar', array( &$this, 'get_avatar'), 10, 5 );
 		add_action( 'admin_init', array( &$this, 'scripts') );
 	}
 
 
+	/**
+	 * Add Scripts to Profile-page 
+	 * @since 0.1
+	*/
 	public function scripts() 
 	{	
 		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
@@ -65,6 +94,11 @@ class WP_avatar
 		}
 	}
 
+
+	/**
+	 * Add avatars folder on activation 
+	 * @since 0.1
+	*/
 	public function activation()
 	{
 		if( ! file_exists( $this->upload_path ) ) 
@@ -73,6 +107,11 @@ class WP_avatar
 		}
 	}
 
+
+	/**
+	 * Add Pofile menu to Users
+	 * @since 0.1
+	*/
 	public function profile_menu() 
 	{
 		add_submenu_page( 
@@ -85,6 +124,12 @@ class WP_avatar
 		); 
 	}
 
+
+	/**
+	 * Submitform for avatar uplaod
+	 * @return Html and form
+	 * @since 0.1
+	*/
 	public function avatar_page()
 	{
 		$user_id = get_current_user_id();
@@ -111,32 +156,38 @@ class WP_avatar
 		echo $output;
 	}
 
-	public function get_upload()
+
+	/**
+	 * Takes care of the upload 
+	 * @return mime_type and upload file
+	 * @since 0.1
+	*/
+	public function handle_upload()
 	{
 		if ( count( $_FILES ) > 0 ) 
 		{
-			$this->handle_upload();
+			require_once( ABSPATH . '/wp-admin/includes/image.php' );
+
+			// Set the mime_type
+			$this->mime_type = $_FILES[self::$input_field]['name'];
+
+			// Save and run the magic on avatars
+			$this->save_avatar( $_FILES[self::$input_field]['tmp_name'], 200 );
 		}
 	}
 
-	public function handle_upload()
-	{
-		require_once( ABSPATH . '/wp-admin/includes/image.php' );
 
-		// Set the mime_type
-		$this->mime_type = $_FILES[self::$input_field]['name'];
-
-		// Save and run the magic on avatars
-		$this->save_avatar( $_FILES[self::$input_field]['tmp_name'], 200 );
-	}
-
+	/**
+	 * Save the avatar to disk and update usermeta
+	 * @since 0.1
+	*/
 	private function save_avatar( $sourcefile, $size )
 	{
-		$user_id       = get_current_user_id();
-		$user          = get_userdata( $user_id );
-		$type          = wp_check_filetype( $this->mime_type );
-		$image         = wp_get_image_editor( $sourcefile );
-		$path_and_name = $this->upload_path . $user->user_login . '.';
+		$user_id        = get_current_user_id();
+		$user           = get_userdata( $user_id );
+		$type           = wp_check_filetype( $this->mime_type );
+		$image          = wp_get_image_editor( $sourcefile );
+		$path_and_name  = $this->upload_path . $user->user_login . '.';
 
 		// User have avatar but not the same format
 		foreach ( $this->formats as $format ) 
@@ -157,7 +208,12 @@ class WP_avatar
 		}
 	}
 
-	// Overide the default get_avatar function via the add_action
+
+	/**
+	 * Override get_avatar with uploaded avatar else default
+	 * @return uploaded avatar else default
+	 * @since 0.1
+	*/
 	public function get_avatar( $avatar, $id_or_email, $size, $default, $alt )
 	{	
 		if( $id_or_email ) 
@@ -180,11 +236,4 @@ class WP_avatar
 		
 		return $avatar;
 	}
-}vatar;
-		}
-		
-		return $avatar;
-	}
 }
-
-load_plugin_textdomain( 'wpa', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
