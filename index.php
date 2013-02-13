@@ -61,14 +61,14 @@ class WP_avatar
 	{
 		// Plugin path
 		define( 'WP_AVATAR_URL', plugin_dir_url( __FILE__ ) );
-		define( 'WP_AVATAR_PATH', plugin_dir_path( __FILE__ ) );
 
 		// Set Object vars
-		$this->avatar_url  = WP_CONTENT_URL . '/uploads/avatars/';
-		$this->upload_path = WP_CONTENT_DIR . '/uploads/avatars/';
 		$this->meta_key    = 'avatar';
 		$this->formats     = array( 'jpg', 'jpeg', 'png', 'gif' );
-
+		
+		// Url and path to avatar dir
+		$this->paths();
+		
 		// Activation hook
 		register_activation_hook( __FILE__, array( &$this, 'activation' ) );
 
@@ -80,6 +80,18 @@ class WP_avatar
 		add_action( 'admin_menu', array( &$this, 'profile_menu' ) );
 		add_filter( 'get_avatar', array( &$this, 'get_avatar'), 10, 5 );
 		add_action( 'admin_init', array( &$this, 'scripts') );
+	}
+
+
+	/**
+	 * Add path and url to avatar folder
+	 * @since 1.0
+	*/
+	public function paths()
+	{
+		$upload = wp_upload_dir();
+		$this->avatar_url  = $upload['baseurl'] . '/avatars/';
+		$this->upload_path = $upload['basedir'] . '/avatars/';
 	}
 
 
@@ -194,7 +206,7 @@ class WP_avatar
 		$user           = get_userdata( $user_id );
 		$type           = wp_check_filetype( $this->mime_type );
 		$image          = wp_get_image_editor( $sourcefile );
-		$path_and_name  = $this->upload_path . $user->user_login . '.';
+		$path_and_name  = $this->upload_path . $user->user_login . '_' . $user->ID . '.';
 
 		// User have avatar but not the same format
 		foreach ( $this->formats as $format ) 
@@ -211,7 +223,7 @@ class WP_avatar
 		    $image->save( $path_and_name . $type['ext'] );
 
 		    // Save the name of the file to user_meta
-		    update_user_meta( $user_id, 'avatar', $user->user_login . '.' . $type['ext'] );
+		    update_user_meta( $user_id, 'avatar', $user->user_login . '_' . $user->ID . '.' . $type['ext'] );
 		}
 	}
 
